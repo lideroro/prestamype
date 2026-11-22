@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: collection-hub
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/hub_cobranza}
+    username: ${DB_USER:hub_user}
+    password: ${DB_PASSWORD:hub_pass}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+
+fineract:
+  base-url: ${FINERACT_URL:https://localhost:8443/fineract-provider/api/v1}
+  tenant-id: ${FINERACT_TENANT:default}
+  username: ${FINERACT_USER:mifos}
+  password: ${FINERACT_PASSWORD:password}
+  trust-self-signed: ${FINERACT_TRUST_SELF_SIGNED:true}

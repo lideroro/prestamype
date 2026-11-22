@@ -1,0 +1,13 @@
+D:\Temp\Prueba1\src\main\java\com\bian\hub\application\service\SyncCollectionService.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\CollectionHubApplication.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\domain\model\BatchStatus.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\domain\model\CollectionBatch.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\domain\model\CollectionOrder.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\domain\model\OrderStatus.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\domain\repository\CollectionBatchRepository.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\domain\repository\CollectionOrderRepository.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\infrastructure\fineract\FineractApiClient.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\infrastructure\fineract\FineractClientConfig.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\infrastructure\fineract\FineractDtos.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\infrastructure\rest\ApiDtos.java
+D:\Temp\Prueba1\src\main\java\com\bian\hub\infrastructure\rest\CollectionHubController.java

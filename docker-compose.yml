@@ -1,0 +1,86 @@
+services:
+  fineract-db:
+    image: mariadb:11.4
+    container_name: fineract-db
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    volumes:
+      - ./docker/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - fineract_db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  fineract-server:
+    image: apache/fineract:1.12.1
+    container_name: fineract-server
+    depends_on:
+      fineract-db:
+        condition: service_healthy
+    environment:
+      FINERACT_HIKARI_DRIVER_SOURCE_CLASS_NAME: org.mariadb.jdbc.Driver
+      FINERACT_HIKARI_JDBC_URL: jdbc:mariadb://host.docker.internal:3307/fineract_tenants
+      FINERACT_HIKARI_USERNAME: root
+      FINERACT_HIKARI_PASSWORD: mysql
+      FINERACT_DEFAULT_TENANTDB_HOSTNAME: host.docker.internal
+      FINERACT_DEFAULT_TENANTDB_PORT: 3307
+      FINERACT_DEFAULT_TENANTDB_UID: root
+      FINERACT_DEFAULT_TENANTDB_PWD: mysql
+      FINERACT_DEFAULT_TENANTDB_NAME: fineract_default
+      FINERACT_NODE_ID: 1
+      JAVA_TOOL_OPTIONS: "-Xmx1536m"
+    ports:
+      - "8443:8443"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -k -f https://localhost:8443/fineract-provider/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  hub-db:
+    image: postgres:16-alpine
+    container_name: hub-db
+    environment:
+      POSTGRES_DB: hub_cobranza
+      POSTGRES_USER: hub_user
+      POSTGRES_PASSWORD: hub_pass
+    volumes:
+      - hub_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hub_user -d hub_cobranza"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  collection-hub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: collection-hub
+    depends_on:
+      fineract-server:
+        condition: service_healthy
+      hub-db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://host.docker.internal:5433/hub_cobranza
+      DB_USER: hub_user
+      DB_PASSWORD: hub_pass
+      FINERACT_URL: https://docker.internal
+      FINERACT_TENANT: default
+      FINERACT_USER: mifos
+      FINERACT_PASSWORD: password
+      FINERACT_TRUST_SELF_SIGNED: "true"
+    ports:
+      - "8080:8080"
+
+volumes:
+  fineract_db_data:
+  hub_db_data:
